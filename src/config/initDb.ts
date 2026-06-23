@@ -7,6 +7,11 @@ const initDb = async () => {
   try {
     const sql = await fs.readFile(path.join(__dirname, "schema.sql"), "utf-8");
     await query(sql);
+    const seedSql = await fs.readFile(
+      path.join(__dirname, "seed.sql"),
+      "utf-8",
+    );
+    await query(seedSql);
     console.log("Tables created successfully");
     process.exit(0);
   } catch (error) {
