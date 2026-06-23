@@ -8,7 +8,7 @@ const pool = new Pool({
   port: Number(process.env.DB_PORT),
 });
 
-const query = (text: string, params: any[]) => pool.query(text, params);
+const query = (text: string, params: any[] = []) => pool.query(text, params);
 const getClient = () => pool.connect();
 
 export { getClient, query };
