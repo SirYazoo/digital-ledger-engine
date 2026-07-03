@@ -13,12 +13,12 @@ const printTally = (testName: string, statuses: number[]) => {
     },
     {} as Record<number, number>,
   );
-  console.log(`\n📊 ${testName} Results:`, tally);
+  console.log(`${testName} Results:`, tally);
 };
 
 // --- TEST CASE A: REDIS IDEMPOTENCY ---
 async function runIdempotencyTest() {
-  console.log("🚀 Starting Idempotency Test (50 identical requests)...");
+  console.log("Starting Idempotency Test (50 identical requests)...");
   const sharedKey = crypto.randomUUID();
   const requests = Array.from({ length: 50 }, (_, i) => ({
     url: API_URL,
@@ -49,7 +49,7 @@ async function runIdempotencyTest() {
 
 // --- TEST CASE B: POSTGRESQL CONCURRENCY ---
 async function runConcurrencyTest() {
-  console.log("\n🚀 Starting Concurrency Test (10 unique requests)...");
+  console.log("Starting Concurrency Test (10 unique requests)...");
   const requests = Array.from({ length: 10 }, (_, i) => ({
     url: API_URL,
     method: "POST",
@@ -85,9 +85,9 @@ async function executeSuite() {
 
     await runConcurrencyTest();
 
-    console.log("\n✅ Stress Test Suite Completed.");
+    console.log("Stress Test Suite Completed.");
   } catch (error) {
-    console.error("❌ Test Suite Failed:", error);
+    console.error("Test Suite Failed:", error);
   }
 }
 

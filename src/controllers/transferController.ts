@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { uuidv7 } from "uuidv7";
 import { getClient } from "../config/db";
 
 const handleTransfer = async (req: Request, res: Response) => {
@@ -45,22 +46,25 @@ const handleTransfer = async (req: Request, res: Response) => {
       throw new Error("Insufficient funds");
     }
 
+    const transferId = uuidv7();
     const transactionNote =
       note || `Transfer from ${senderId} to ${receiverId}`;
     const newTransaction = await client.query(
-      "INSERT INTO transactions (note) VALUES ($1) RETURNING id",
-      [transactionNote],
+      "INSERT INTO transactions (id, note) VALUES ($1, $2) RETURNING id",
+      [transferId, transactionNote],
     );
 
+    const journalEntriesIdCredit = uuidv7();
+    const journalEntriesIdDebit = uuidv7();
     const transactionId = newTransaction.rows[0].id;
     await client.query(
-      "INSERT INTO journal_entries (transaction_id, account_id, debit, credit) VALUES ($1, $2, $3, $4)",
-      [transactionId, senderId, 0, amount],
+      "INSERT INTO journal_entries (id, transaction_id, account_id, debit, credit) VALUES ($1, $2, $3, $4, $5)",
+      [journalEntriesIdCredit, transactionId, senderId, 0, amount],
     );
 
     await client.query(
-      "INSERT INTO journal_entries (transaction_id, account_id, debit, credit) VALUES ($1, $2, $3, $4)",
-      [transactionId, receiverId, amount, 0],
+      "INSERT INTO journal_entries (id, transaction_id, account_id, debit, credit) VALUES ($1, $2, $3, $4, $5)",
+      [journalEntriesIdDebit, transactionId, receiverId, amount, 0],
     );
 
     await client.query("COMMIT");
