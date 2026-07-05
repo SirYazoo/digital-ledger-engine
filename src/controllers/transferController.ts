@@ -67,6 +67,21 @@ const handleTransfer = async (req: Request, res: Response) => {
       [journalEntriesIdDebit, transactionId, receiverId, amount, 0],
     );
 
+    const outboxEventId = uuidv7();
+    await client.query(
+      "INSERT INTO outbox_events (id, event_type, event_data) VALUES ($1, $2, $3)",
+      [
+        outboxEventId,
+        "TransferCompleted",
+        JSON.stringify({
+          transferId,
+          senderId,
+          receiverId,
+          amount,
+        }),
+      ],
+    );
+
     await client.query("COMMIT");
     return res
       .status(200)
