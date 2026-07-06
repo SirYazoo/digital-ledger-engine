@@ -16,6 +16,21 @@ services:
     container_name: ledger_redis
     ports:
       - "${REDIS_PORT:-6379}:6379"
+    command: redis-server --save 60 1 --loglevel warning
     restart: unless-stopped
+  kafka:
+    image: apache/kafka:latest
+    container_name: ledger_kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:9093'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://localhost:9092'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_HEAP_OPTS: "-Xmx512M -Xms512M"
 volumes:
   pgdata:
