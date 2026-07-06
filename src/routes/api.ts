@@ -1,6 +1,6 @@
 import express from "express";
 import { handleTransfer } from "../controllers/transferController";
-import requireIdempotency from "../middleware/idempotency";
+import { requireIdempotency } from "../middleware/idempotency";
 
 const router = express.Router();
 
