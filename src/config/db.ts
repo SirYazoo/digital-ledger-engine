@@ -10,5 +10,6 @@ const pool = new Pool({
 
 const query = (text: string, params: any[] = []) => pool.query(text, params);
 const getClient = () => pool.connect();
+const closePool = () => pool.end();
 
-export { getClient, query };
+export { closePool, getClient, query };
