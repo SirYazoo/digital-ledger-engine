@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS outbox_events, journal_entries, transactions, accounts CASC
 
 CREATE TABLE IF NOT EXISTS accounts (
     id UUID PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
+    name VARCHAR(255) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -23,9 +23,12 @@ CREATE TABLE IF NOT EXISTS journal_entries (
 
 CREATE TABLE IF NOT EXISTS outbox_events (
     id UUID PRIMARY KEY,
-    event_type VARCHAR(50) NOT NULL,
-    event_data JSONB NOT NULL,
-    status VARCHAR(50) NOT NULL DEFAULT 'PENDING',
+    topic VARCHAR(255) NOT NULL,
+    aggregate_id VARCHAR(255) NOT NULL,
+    aggregate_type VARCHAR(255) NOT NULL,
+    event_type VARCHAR(255) NOT NULL,
+    payload JSONB NOT NULL,
+    status VARCHAR(255) NOT NULL DEFAULT 'PENDING',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

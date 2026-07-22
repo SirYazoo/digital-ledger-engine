@@ -19,7 +19,7 @@ async function processOutboxBatch() {
       try {
         await producer.send({
           topic: event.topic,
-          messages: [{ value: event.payload }],
+          messages: [{ key: event.aggregate_id, value: JSON.stringify(event.payload) }],
           acks: -1,
         });
         await client.query(

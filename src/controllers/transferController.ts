@@ -69,12 +69,15 @@ const handleTransfer = async (req: Request, res: Response) => {
 
     const outboxEventId = uuidv7();
     await client.query(
-      "INSERT INTO outbox_events (id, event_type, event_data) VALUES ($1, $2, $3)",
+      "INSERT INTO outbox_events (id, topic, aggregate_id, aggregate_type, event_type, payload) VALUES ($1, $2, $3, $4, $5, $6)",
       [
         outboxEventId,
-        "TransferCompleted",
+        "ledger.transfers.v1",
+        transactionId,
+        "TRANSFER",
+        "TRANSFER_COMPLETED",
         JSON.stringify({
-          transferId,
+          transactionId,
           senderId,
           receiverId,
           amount,
